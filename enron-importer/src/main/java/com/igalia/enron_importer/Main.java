@@ -30,6 +30,8 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import com.igalia.enron_importer.models.Mail;
+
 /**
  *
  * @author Diego Pino García <dpino@igalia.com>
@@ -120,74 +122,6 @@ public class Main {
      * @author Diego Pino García <dpino@igalia.com>
      *
      */
-    static class Mail {
-
-        public final static String ID = "id";
-
-        public final static String PERSON = "person";
-        
-        public final static String FOLDER = "folder";
-        
-        public final static String BODY = "body";
-        
-        public static Mail create(String person, String folder, String body) {
-            return create(UUID.randomUUID().toString(), person, folder, body);
-        }
-
-        public static Mail create(String id, String person, String folder, String body) {
-            Mail result = new Mail();
-            result.id = id;
-            result.folder = folder;
-            result.person = person;
-            result.body = body;
-            return result;
-        }
-
-        private String id;
-
-        private String person;
-        
-        private String folder;
-        
-		private String body;
-
-        public Mail() {
-
-        }
-
-        public String getPerson() {
-			return person;
-		}
-
-		public String getFolder() {
-			return folder;
-		}
-
-        public String getBody() {
-            return body;
-        }
-
-        public String getFirstLine() {
-            return body.substring(0, body.indexOf('\n'));
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String toString() {
-			return String.format("(%s: %s; %s: %s; %s: %s; %s: %s)", ID, id,
-					PERSON, person, FOLDER, folder, BODY,
-					StringUtils.substring(body, 0, 16));
-        }
-
-    }
-
-    /**
-     *
-     * @author Diego Pino García <dpino@igalia.com>
-     *
-     */
     static class MailFactory {
 
         public static MailFactory create(String filename) throws FileNotFoundException {
@@ -266,7 +200,7 @@ public class Main {
         File dir = new File(args.length == 0 ? MAIL_FOLDER : args[0]);
         try {
             HBaseHelper hbase = HBaseHelper.create();
-            hbase.createTable(tableName, Mail.PERSON, Mail.FOLDER, Mail.BODY);
+            hbase.createTable(tableName, "person", "folder", "body");
             
             Collection<File> files = FileUtils.listFiles(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);            
             for (File each: files) {
@@ -276,9 +210,9 @@ public class Main {
             	String body = mail.getBody();
             	if (body != null && !body.isEmpty()) {
             		// System.out.println("### Insert mail: " + mail);
-                	hbase.insert(tableName, mail.getId(), Arrays.asList(Mail.PERSON, "", mail.getPerson()));
-                	hbase.insert(tableName, mail.getId(), Arrays.asList(Mail.FOLDER, "", mail.getFolder()));
-                	hbase.insert(tableName, mail.getId(), Arrays.asList(Mail.BODY, "", body));                	
+                	hbase.insert(tableName, mail.getId(), Arrays.asList("person", "", mail.getPerson()));
+                	hbase.insert(tableName, mail.getId(), Arrays.asList("folder", "", mail.getFolder()));
+                	hbase.insert(tableName, mail.getId(), Arrays.asList("body", "", body));                	
                 	imported++;
             	} else {
             		failed++;
