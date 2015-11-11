@@ -22,7 +22,7 @@ public class MailFactory {
 
   private static Logger LOG = LoggerFactory.getLogger(MailFactory.class);
 
-  public Mail createMail(String filename) throws MailParseException {
+  public Mail createMail(String filename) throws MailParseException, IOException {
     BufferedReader infile = null;
     StringBuffer bodyBuff = new StringBuffer();
     String[] parts = filename.split("/");
@@ -37,9 +37,6 @@ public class MailFactory {
         while ((line = infile.readLine()) != null) {
           bodyBuff.append(line);
         }
-      } catch (IOException e) {
-        LOG.error("%s", e);
-
       } finally {
         if (infile != null) {
           try {
