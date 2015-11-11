@@ -63,6 +63,12 @@ public class MailFactoryTest {
     LOG.debug("Temporary file has been written.");
   }
 
+  private void verify_equals(final Object expected, final Object actual) {
+    new Verifications() {{
+      Assert.assertEquals("The created object is incorrect.", expected, actual);
+    }};
+  }
+
   @Test(expected=MailParseException.class)
   public void createMail_NoPath() throws MailParseException, IOException {
     Mail actual = mailFactory.createMail("");
@@ -86,8 +92,19 @@ public class MailFactoryTest {
     final Mail actual = mailFactory.createMail(folder.getRoot() + "/" + TEST_FILE_NAME);
     actual.setId(DEFAULT_ID);
 
-    new Verifications() {{
-      Assert.assertEquals("The created object is incorrect.", expected, actual);
-    }};
+    verify_equals(expected, actual);
+  }
+
+  @Test
+  public void createMail_NoContents() throws MailParseException, IOException {
+    String emptyFileName = TEST_PERSON+"/"+TEST_FOLDER+"/emptyFile";
+    File emptyFile = folder.newFile(emptyFileName);
+    final Mail expected = new Mail(TEST_PERSON, TEST_FOLDER, "");
+    expected.setId(DEFAULT_ID);
+
+    final Mail actual = mailFactory.createMail(emptyFile.getAbsolutePath());
+    actual.setId(DEFAULT_ID);
+
+    verify_equals(expected, actual);
   }
 }
