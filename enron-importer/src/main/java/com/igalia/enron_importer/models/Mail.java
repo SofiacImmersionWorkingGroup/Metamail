@@ -41,6 +41,6 @@ public class Mail {
   @Override
   public String toString() {
     return String.format("(id: %s; person: %s; folder: %s; body: %s)", id, person,
-        folder, body.substring(0, 16));
+        folder, body.substring(0, (body.length() >= 16 ? 16: body.length())));
   }
 }
