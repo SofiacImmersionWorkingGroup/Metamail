@@ -88,7 +88,7 @@ public class Main {
                 descriptor.addFamily(cd);
             }
             hbaseAdmin.createTable(descriptor);
-            debug(String.format("Database %s created", tableName));
+            LOG.debug("Database %s created", tableName);
             hbaseAdmin.close();
             return this.connection.getTable(TableName.valueOf(tableName));
         }
@@ -124,15 +124,11 @@ public class Main {
             table.close();
             this.connection.close();
           } catch (IOException e) {
-            debug("Failed to close the table or the connection.");
+            LOG.debug("Failed to close the table or the connection.");
           }
         }
     }
 
-    private static void debug(Object obj) {
-        System.out.println(String.format("### DEBUG: %s", obj.toString()));
-    }
-   
   private static Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main( String[] args )
@@ -160,7 +156,6 @@ public class Main {
             	
             	String body = mail.getBody();
             	if (body != null && !body.isEmpty()) {
-            		// System.out.println("### Insert mail: " + mail);
                 	hbase.insert(table, mail.getId(), Arrays.asList("person", "", mail.getPerson()));
                 	hbase.insert(table, mail.getId(), Arrays.asList("folder", "", mail.getFolder()));
                 	hbase.insert(table, mail.getId(), Arrays.asList("body", "", body));                	
@@ -169,18 +164,14 @@ public class Main {
             		failed++;
             	}
             }
-			System.out.println(String.format(
-					"Total: %d; Imported: %d; Failed: %d", files.size(),
-					imported, failed));
+	    LOG.info("Total: %d; Imported: %d; Failed: %d", files.size(), imported, failed);
+
         } catch (MasterNotRunningException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+          LOG.error("%s",e);
         } catch (ZooKeeperConnectionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+          LOG.error("%s",e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+          LOG.error("%s",e);
         } finally {
           hbase.closeAll(table);
         }
