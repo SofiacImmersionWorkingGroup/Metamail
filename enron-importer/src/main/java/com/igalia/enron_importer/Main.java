@@ -31,7 +31,11 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import com.igalia.enron_importer.models.Mail;
+import com.igalia.enron_importer.models.MailParseException;
+import com.igalia.enron_importer.services.MailFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  *
  * @author Diego Pino García <dpino@igalia.com>
@@ -117,84 +121,16 @@ public class Main {
         }
     }
 
-    /**
-     *
-     * @author Diego Pino García <dpino@igalia.com>
-     *
-     */
-    static class MailFactory {
-
-        public static MailFactory create(String filename) throws FileNotFoundException {
-            MailFactory result = new MailFactory();
-            result.openFile(filename);
-            return result;
-        }
-
-        private DataInputStream in;
-
-        private BufferedReader filereader;
-
-        private void closeFile() throws IOException {
-            in.close();
-        }
-
-        public Mail getMail() throws IOException {
-            String buffer = new String();
-            String line = readLine();
-            if (line.startsWith("From ")) {
-                line = readLine();
-            }
-            while (line != null && !line.startsWith("From ")) {
-                buffer += line + "\n";
-                line = readLine();
-            }
-
-            if (line == null) {
-                closeFile();
-                return null;
-            }
-            return null;
-        }
-
-        private BufferedReader openFile(String filename) throws FileNotFoundException {
-            if (filereader == null) {
-                FileInputStream fstream = new FileInputStream(filename);
-                in = new DataInputStream(fstream);
-                filereader = new BufferedReader(new InputStreamReader(in));
-            }
-            return filereader;
-        }
-
-        private String readLine() throws IOException {
-            return filereader != null ? filereader.readLine() : new String();
-        }
-
-		public static Mail createMail(String filename) {
-			try {
-				String[] parts = StringUtils.split(filename, "/");
-				int size = parts.length;
-				if (size >= 3) {
-					String folder = parts[size - 2];
-					String person = parts[size - 3];
-					String body = FileUtils.readFileToString(new File(filename));
-					
-					return Mail.create(person, folder, body);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-    }
-
     private static void debug(Object obj) {
         System.out.println(String.format("### DEBUG: %s", obj.toString()));
     }
-    
+   
+  private static Logger LOG = LoggerFactory.getLogger(Main.class);
+
     public static void main( String[] args )
     {
         Mail mail;
+        MailFactory mailFactory = new MailFactory();
         long failed = 0, imported = 0;
         String tableName = "enron";
         File dir = new File(args.length == 0 ? MAIL_FOLDER : args[0]);
@@ -205,7 +141,12 @@ public class Main {
             Collection<File> files = FileUtils.listFiles(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);            
             for (File each: files) {
             	String filename = each.getCanonicalPath();
-            	mail = MailFactory.createMail(filename);                        	
+                try {
+              	  mail = mailFactory.createMail(filename);
+                } catch (MailParseException e) {
+                  LOG.error("%s", e);
+                  continue;
+                }
             	
             	String body = mail.getBody();
             	if (body != null && !body.isEmpty()) {
