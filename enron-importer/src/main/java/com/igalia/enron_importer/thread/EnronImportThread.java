@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 
 public class EnronImportThread implements Runnable {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MainThread.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EnronImportThread.class);
 
   @Resource
   private MailFactory mailFactory;
@@ -62,14 +62,14 @@ public class EnronImportThread implements Runnable {
       // If directory, explore and add to the queue
       if (tempFile.isDirectory()) {
         Collections.addAll(files, tempFile.listFiles());
-        LOG.debug("Found a new directory: '%s'", tempFile.getAbsolutePath());
+        LOG.debug("Found a new directory: '%s/%s'", tempFile.getAbsolutePath(), tempFile.getName());
         continue;
 
       // If file, then expand it and capture its data.
       } else if (tempFile.isFile()) {
 
         try {
-          mail = mailFactory.createMail(tempFile.getAbsolutePath());
+          mail = mailFactory.createMail(tempFile);
 
         } catch (MailParseException e) {
           // Means we couldn't parse the file, so just skip it for now.

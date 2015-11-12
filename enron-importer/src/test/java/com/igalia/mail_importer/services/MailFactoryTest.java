@@ -70,18 +70,23 @@ public class MailFactoryTest {
   }
 
   @Test(expected=MailParseException.class)
+  public void createMail_NullParameter() throws MailParseException, IOException {
+    Mail actual = mailFactory.createMail(null);
+  }
+
+  @Test(expected=MailParseException.class)
   public void createMail_NoPath() throws MailParseException, IOException {
-    Mail actual = mailFactory.createMail("");
+    Mail actual = mailFactory.createMail(new File(""));
   }
 
   @Test(expected=MailParseException.class)
   public void createMail_EdgePath() throws MailParseException, IOException {
-    Mail actual = mailFactory.createMail("1/2");
+    Mail actual = mailFactory.createMail(new File("1/2"));
   }
 
-  @Test(expected=IOException.class)
+  @Test(expected=MailParseException.class)
   public void createMail_NoFileAtPath() throws MailParseException, IOException {
-    Mail actual = mailFactory.createMail("1/2/3");
+    Mail actual = mailFactory.createMail(new File("1/2/3"));
   }
 
   @Test
@@ -89,7 +94,7 @@ public class MailFactoryTest {
     final Mail expected = new Mail(TEST_PERSON, TEST_FOLDER, TEST_FILE_CONTENTS);
     expected.setId(DEFAULT_ID);
 
-    final Mail actual = mailFactory.createMail(folder.getRoot() + "/" + TEST_FILE_NAME);
+    final Mail actual = mailFactory.createMail(new File(folder.getRoot() + "/" + TEST_FILE_NAME));
     actual.setId(DEFAULT_ID);
 
     verify_equals(expected, actual);
@@ -102,7 +107,7 @@ public class MailFactoryTest {
     final Mail expected = new Mail(TEST_PERSON, TEST_FOLDER, "");
     expected.setId(DEFAULT_ID);
 
-    final Mail actual = mailFactory.createMail(emptyFile.getAbsolutePath());
+    final Mail actual = mailFactory.createMail(emptyFile);
     actual.setId(DEFAULT_ID);
 
     verify_equals(expected, actual);

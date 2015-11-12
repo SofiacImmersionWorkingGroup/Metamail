@@ -1,8 +1,7 @@
 /**
- * @author Diego Pino García <dpino@igalia.com>
- * @author Dustin Saunders <dustin.saunders@sofiac.us>
- *
  * This class represents a single entity in the enron dataset.
+ *
+ * @author Dustin Saunders <dustin.saunders@sofiac.us>
  */
 package com.igalia.enron_importer.models;
 
@@ -11,6 +10,7 @@ import com.google.common.base.MoreObjects;
 import java.util.Objects;
 import java.util.UUID;
 
+
 public class Mail {
 
   private String id;
@@ -18,10 +18,21 @@ public class Mail {
   private String folder;
   private String body;
 
+  /**
+   * Default constructor, sets everything to empty String.
+   *
+   */
   public Mail() {
     this("", "", "");
   }
 
+  /**
+   * Constructor. Use this if creating object.
+   *
+   * @param person Recipient of the email
+   * @param folder Their mail folder that it was in
+   * @param body The rest of the message, unfiltered
+   */
   public Mail(String person, String folder, String body) {
     this.id = UUID.randomUUID().toString();
     this.person = person;
