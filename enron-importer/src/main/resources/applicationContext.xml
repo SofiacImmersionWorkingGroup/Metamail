@@ -18,7 +18,7 @@
   <hdp:hbase-configuration />
   <bean id="hbaseTemplate" class="org.springframework.data.hadoop.hbase.HbaseTemplate" p:configuration-ref="hbaseConfiguration" />
 
-  <bean id="MainThread" class="com.igalia.enron_importer.thread.MainThread" />
+  <bean id="MainThread" class="com.igalia.enron_importer.thread.EnronImportThread" />
   <bean id="maildir" class="java.io.File">
     <constructor-arg value="./data/maildir" />
   </bean>

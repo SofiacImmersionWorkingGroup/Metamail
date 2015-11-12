@@ -1,3 +1,8 @@
+/**
+ * This class serves as the main execution of the enron import.
+ *
+ * @author Dustin Saunders <dustin.saunders@sofiac.us>
+ */
 package com.igalia.enron_importer.thread;
 
 import com.igalia.enron_importer.models.Mail;
@@ -17,7 +22,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Resource;
 
-public class MainThread implements Runnable {
+public class EnronImportThread implements Runnable {
 
   private static final Logger LOG = LoggerFactory.getLogger(MainThread.class);
 
