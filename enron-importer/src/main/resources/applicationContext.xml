@@ -19,8 +19,14 @@
   <bean id="hbaseTemplate" class="org.springframework.data.hadoop.hbase.HbaseTemplate" p:configuration-ref="hbaseConfiguration" />
 
   <bean id="MainThread" class="com.igalia.enron_importer.thread.MainThread" />
-  <bean id="maildir" class="java.lang.String">
+  <bean id="maildir" class="java.io.File">
     <constructor-arg value="./data/maildir" />
+  </bean>
+  <bean id="tableName" class="java.lang.String">
+    <constructor-arg value="enron" />
+  </bean>
+  <bean id="mailBufferSize" class="java.lang.Integer">
+    <constructor-arg value="5" />
   </bean>
 </beans>
 
