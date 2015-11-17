@@ -55,9 +55,6 @@ public class Mail {
         Header element = e.nextElement();
         System.out.println(element.getName());
         System.out.println(element.getValue());
-        System.out.println();
-        System.out.println();
-        System.out.println();
       } 
     } catch (MessagingException e) {
       System.out.println(e);
