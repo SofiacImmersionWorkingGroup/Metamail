@@ -5,11 +5,19 @@
  */
 package com.igalia.enron_importer.models;
 
-import com.google.common.base.MoreObjects;
+//import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.List;
+import java.util.Enumeration;
 
+import java.io.ByteArrayInputStream;
+
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.*;
+
+import com.sun.mail.util.MessageRemovedIOException;
 
 public class Mail {
 
@@ -17,6 +25,8 @@ public class Mail {
   private String person;
   private String folder;
   private String body;
+  private MimeBodyPart mimebody;
+  private List headers;
 
   /**
    * Default constructor, sets everything to empty String.
@@ -38,6 +48,21 @@ public class Mail {
     this.person = person;
     this.folder = folder;
     this.body = body;
+    try {
+      this.mimebody = new MimeBodyPart(new ByteArrayInputStream(body.getBytes()));
+      //this.headers = this.mimebody.getAllHeaders();
+      for (Enumeration<Header> e = this.mimebody.getAllHeaders(); e.hasMoreElements();) {
+        Header element = e.nextElement();
+        System.out.println(element.getName());
+        System.out.println(element.getValue());
+        System.out.println();
+        System.out.println();
+        System.out.println();
+      } 
+    } catch (MessagingException e) {
+      System.out.println(e);
+    } 
+
   }
 
   public String getPerson() {
@@ -74,12 +99,15 @@ public class Mail {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
+    return "To be implemented";
+    /*
+    return Objects.toStringHelper(this)
       .add("id", this.id)
       .add("person", this.person)
       .add("folder", this.folder)
       .add("body", this.body.substring(0, (body.length() >= 16 ? 16 : body.length())))
       .toString();
+    */
   }
 
   @Override

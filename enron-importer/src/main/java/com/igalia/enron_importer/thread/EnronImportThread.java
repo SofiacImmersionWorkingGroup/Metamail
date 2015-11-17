@@ -70,6 +70,7 @@ public class EnronImportThread implements Runnable {
 
         try {
           mail = mailFactory.createMail(tempFile);
+          System.out.println("Found: " + tempFile);
 
         } catch (MailParseException e) {
           // Means we couldn't parse the file, so just skip it for now.
