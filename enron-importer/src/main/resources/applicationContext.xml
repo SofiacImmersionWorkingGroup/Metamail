@@ -13,10 +13,12 @@
     http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
   <context:annotation-config />
+  <context:property-placeholder location="hbase.properties"/>
   <context:component-scan base-package="com.igalia.enron_importer.services" />
+  <context:component-scan base-package="org.springframework.samples.hadoop.hbase"/>
 
   <hdp:configuration id="hadoopConfiguration">
-    fs.defaultFS=hdfs://localhost:8020
+    fs.defaultFS=hdfs://cloud-3.wg.interclypse.net:8020
   </hdp:configuration>
   <hdp:hbase-configuration configuration-ref="hadoopConfiguration" zk-quorum="${hbase.zk.host}" zk-port="${hbase.zk.port}"/>
   <bean id="hbaseTemplate" class="org.springframework.data.hadoop.hbase.HbaseTemplate">
@@ -28,7 +30,7 @@
     <constructor-arg value="./data/maildir" />
   </bean>
   <bean id="tableName" class="java.lang.String">
-    <constructor-arg value="maildir" />
+    <constructor-arg value="enron2" />
   </bean>
   <bean id="mailBufferSize" class="java.lang.Integer">
     <constructor-arg value="5" />
