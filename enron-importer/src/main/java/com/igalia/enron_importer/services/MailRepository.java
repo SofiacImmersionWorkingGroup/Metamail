@@ -29,6 +29,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Resource;
 
 @Repository
@@ -60,10 +61,14 @@ public class MailRepository {
         int imported = 0;
         Put put = null;
         for (Mail mail: mailList) {
+          Set<String> headers = mail.getAllHeaders();
           put = new Put(Bytes.toBytes(mail.getId()));
           put.add(Bytes.toBytes("person"), Bytes.toBytes(""), Bytes.toBytes(mail.getPerson()));
           put.add(Bytes.toBytes("folder"), Bytes.toBytes(""), Bytes.toBytes(mail.getFolder()));
           put.add(Bytes.toBytes("body"), Bytes.toBytes(""), Bytes.toBytes(mail.getBody()));
+          for (String header : headers) {
+            put.add(Bytes.toBytes("body"), Bytes.toBytes(header), Bytes.toBytes(mail.getHeader(header)));
+          }
           putList.add(put);
           LOG.trace("Added one Put request for object %s.", mail.getId());
           imported++;

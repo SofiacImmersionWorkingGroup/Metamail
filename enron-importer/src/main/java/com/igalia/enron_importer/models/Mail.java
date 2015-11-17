@@ -7,6 +7,7 @@ package com.igalia.enron_importer.models;
 //import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.List;
 import java.util.HashMap;
@@ -94,15 +95,15 @@ public class Mail {
   }
 
   public Set<String> getAllHeaders() {
-    this.headers.keySet();
+    return this.headers.keySet();
   }
 
   public boolean hasHeader(String header) {
     return this.headers.containsKey(header);
   }
 
-  public String getHeader(header) {
-      return this.headers.get(header);
+  public String getHeader(String header) {
+    return this.headers.get(header);
   }
 
   @Override
