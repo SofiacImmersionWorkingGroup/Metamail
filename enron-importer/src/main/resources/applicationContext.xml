@@ -8,22 +8,27 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.0.xsd
     http://www.springframework.org/schema/hadoop
-    http://www.springframework.org/schema/haddop/spring-hadoop.xsd
+    http://www.springframework.org/schema/hadoop/spring-hadoop.xsd
     http://www.springframework.org/schema/task
     http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
   <context:annotation-config />
   <context:component-scan base-package="com.igalia.enron_importer.services" />
 
-  <hdp:hbase-configuration />
-  <bean id="hbaseTemplate" class="org.springframework.data.hadoop.hbase.HbaseTemplate" p:configuration-ref="hbaseConfiguration" />
+  <hdp:configuration id="hadoopConfiguration">
+    fs.defaultFS=hdfs://localhost:8020
+  </hdp:configuration>
+  <hdp:hbase-configuration configuration-ref="hadoopConfiguration" zk-quorum="${hbase.zk.host}" zk-port="${hbase.zk.port}"/>
+  <bean id="hbaseTemplate" class="org.springframework.data.hadoop.hbase.HbaseTemplate">
+    <property name="configuration" ref="hbaseConfiguration"/>
+  </bean>
 
   <bean id="MainThread" class="com.igalia.enron_importer.thread.EnronImportThread" />
   <bean id="maildir" class="java.io.File">
     <constructor-arg value="./data/maildir" />
   </bean>
   <bean id="tableName" class="java.lang.String">
-    <constructor-arg value="enron" />
+    <constructor-arg value="maildir" />
   </bean>
   <bean id="mailBufferSize" class="java.lang.Integer">
     <constructor-arg value="5" />
