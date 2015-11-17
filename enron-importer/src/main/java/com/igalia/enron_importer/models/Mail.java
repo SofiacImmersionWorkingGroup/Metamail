@@ -93,6 +93,18 @@ public class Mail {
     this.id = id;
   }
 
+  public Set<String> getAllHeaders() {
+    this.headers.keySet();
+  }
+
+  public boolean hasHeader(String header) {
+    return this.headers.containsKey(header);
+  }
+
+  public String getHeader(header) {
+      return this.headers.get(header);
+  }
+
   @Override
   public String toString() {
     return "To be implemented";
