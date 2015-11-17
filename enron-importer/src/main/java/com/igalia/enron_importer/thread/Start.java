@@ -23,7 +23,7 @@ public class Start {
     AbstractApplicationContext appContext = null;
 
     try {
-      appContext = new ClassPathXmlApplicationContext();
+      appContext = new ClassPathXmlApplicationContext("applicationContext.xml");
 
       Runnable start = (Runnable) appContext.getBean("MainThread");
       start.run();
