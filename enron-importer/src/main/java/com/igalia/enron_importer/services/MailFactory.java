@@ -62,6 +62,8 @@ public class MailFactory {
         // Read the file through our reader into our string buffer.
         while ((line = inBuffer.readLine()) != null) {
           bodyBuff.append(line);
+          // add back in the newline so we can process the body later
+          bodyBuff.append(System.lineSeparator());
         }
       // No catch here for IOException since we want to throw them.
       } catch (FileNotFoundException e) {
