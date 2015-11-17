@@ -1,5 +1,4 @@
-/**
- * This class represents a single entity in the enron dataset.
+/** * This class represents a single entity in the enron dataset.
  *
  * @author Dustin Saunders <dustin.saunders@sofiac.us>
  */
@@ -10,6 +9,7 @@ package com.igalia.enron_importer.models;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Enumeration;
 
 import java.io.ByteArrayInputStream;
@@ -26,7 +26,7 @@ public class Mail {
   private String folder;
   private String body;
   private MimeBodyPart mimebody;
-  private List headers;
+  private HashMap<String, String> headers;
 
   /**
    * Default constructor, sets everything to empty String.
@@ -48,13 +48,12 @@ public class Mail {
     this.person = person;
     this.folder = folder;
     this.body = body;
+    this.headers = new HashMap<String, String>();
     try {
       this.mimebody = new MimeBodyPart(new ByteArrayInputStream(body.getBytes()));
-      //this.headers = this.mimebody.getAllHeaders();
       for (Enumeration<Header> e = this.mimebody.getAllHeaders(); e.hasMoreElements();) {
         Header element = e.nextElement();
-        System.out.println(element.getName());
-        System.out.println(element.getValue());
+        this.headers.put(element.getName(), element.getValue());
       } 
     } catch (MessagingException e) {
       System.out.println(e);
