@@ -70,7 +70,7 @@ public class MailRepository {
             put.add(Bytes.toBytes("body"), Bytes.toBytes(header), Bytes.toBytes(mail.getHeader(header)));
           }
           putList.add(put);
-          LOG.trace("Added one Put request for object %s.", mail.getId());
+          LOG.trace("Added one Put request for object {}.", mail.getId());
           imported++;
         }
         table.put(putList);
