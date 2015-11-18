@@ -74,7 +74,7 @@ public class MailFactory {
           try {
             inBuffer.close();
           } catch (IOException e) {
-            LOG.error("%s", e);
+            LOG.error("{}", e);
           }
         }
       }

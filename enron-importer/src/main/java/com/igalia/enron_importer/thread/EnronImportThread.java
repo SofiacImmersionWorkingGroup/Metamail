@@ -62,7 +62,7 @@ public class EnronImportThread implements Runnable {
       // If directory, explore and add to the queue
       if (tempFile.isDirectory()) {
         Collections.addAll(files, tempFile.listFiles());
-        LOG.debug("Found a new directory: '%s/%s'", tempFile.getAbsolutePath(), tempFile.getName());
+        LOG.debug("Found a new directory: '{}/{}'", tempFile.getAbsolutePath(), tempFile.getName());
         continue;
 
       // If file, then expand it and capture its data.
@@ -74,11 +74,11 @@ public class EnronImportThread implements Runnable {
 
         } catch (MailParseException e) {
           // Means we couldn't parse the file, so just skip it for now.
-          LOG.warn("%s", e);
+          LOG.warn("{}", e);
           continue; 
         } catch (IOException e) {
           // Means something else happened with the Java IO layer, skip it.
-          LOG.warn("%s", e);
+          LOG.warn("{}", e);
           continue; 
         }
 
@@ -89,10 +89,10 @@ public class EnronImportThread implements Runnable {
         if (mailBuffer.size() >= mailBufferSize) {
           mailCount += mailRepository.batchMailPut(mailBuffer);
           mailBuffer.clear();
-          LOG.debug("Just added %d mail items to the hbase instance", mailCount);
+          LOG.debug("Just added {} mail items to the hbase instance", mailCount);
         }
       }
     }
-    LOG.info("Finsihed! total files found: %d, total imported: %d.", totalFileCount, mailCount);
+    LOG.info("Finsihed! total files found: {}, total imported: {}.", totalFileCount, mailCount);
   }
 }
