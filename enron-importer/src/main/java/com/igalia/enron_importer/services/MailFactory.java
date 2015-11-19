@@ -39,49 +39,31 @@ public class MailFactory {
     }
     BufferedReader inBuffer = null;
     StringBuffer bodyBuff = new StringBuffer();
-    String[] parts = infile.getAbsolutePath().split("/");
+    try {
+      String line = "";
+      inBuffer = new BufferedReader(new FileReader(infile));
 
-    /*
-     * We are expecting the mail directories to be as follows:
-     *
-     * PERSON/FOLDER/mailFile
-     *
-     * Where person and folder are parsed into the Mail object, and 
-     * the mailFile contains the body of the mail object.
-     *
-     * TODO make this more generic to other datasets.
-     */
-    if (parts.length < 3) {
+      // Read the file through our reader into our string buffer.
+      while ((line = inBuffer.readLine()) != null) {
+        bodyBuff.append(line);
+        // add back in the newline so we can process the body later
+        bodyBuff.append(System.lineSeparator());
+      }
+    // No catch here for IOException since we want to throw them.
+    } catch (FileNotFoundException e) {
       throw new MailParseException(infile.getAbsolutePath());
-
-    } else {
-      try {
-        String line = "";
-        inBuffer = new BufferedReader(new FileReader(infile));
-
-        // Read the file through our reader into our string buffer.
-        while ((line = inBuffer.readLine()) != null) {
-          bodyBuff.append(line);
-          // add back in the newline so we can process the body later
-          bodyBuff.append(System.lineSeparator());
-        }
-      // No catch here for IOException since we want to throw them.
-      } catch (FileNotFoundException e) {
-        throw new MailParseException(infile.getAbsolutePath());
-      // but we do want to make sure that the reader is closed properly.
-      } finally {
-        if (inBuffer != null) {
-          try {
-            inBuffer.close();
-          } catch (IOException e) {
-            LOG.error("{}", e);
-          }
+    // but we do want to make sure that the reader is closed properly.
+    } finally {
+      if (inBuffer != null) {
+        try {
+          inBuffer.close();
+        } catch (IOException e) {
+          LOG.error("{}", e);
         }
       }
     }
 
-    // Remember the format PERSON/FOLDER/mailFile
-    return new Mail(parts[parts.length - 3], parts[parts.length - 2], bodyBuff.toString());
+    return new Mail(bodyBuff.toString());
   }
 }
 
