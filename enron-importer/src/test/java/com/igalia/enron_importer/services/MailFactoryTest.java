@@ -22,9 +22,7 @@ import java.io.IOException;
 
 public class MailFactoryTest {
 
-  private static final String TEST_PERSON = "testperson";
-  private static final String TEST_FOLDER = "testfolder";
-  private static final String TEST_FILE_NAME = TEST_PERSON+"/"+TEST_FOLDER+"/testfile.txt";
+  private static final String TEST_FILE_NAME = "testfile.txt";
   private static final String TEST_FILE_CONTENTS = "IthinkThisIsLongEnoughForABody";
   private static final String DEFAULT_ID = "1";
 
@@ -39,11 +37,7 @@ public class MailFactoryTest {
   @BeforeClass
   public static void setup() throws IOException {
     // Set up the test file to be used in the temp folder.
-    folder.newFolder(TEST_PERSON);
-    folder.newFolder(TEST_PERSON, TEST_FOLDER);
     File testFile = folder.newFile(TEST_FILE_NAME);
-    LOG.debug("Used the TempFolder to create my file space to use with tests.");
-
     BufferedWriter writer = null;
     try {
       writer = new BufferedWriter(new FileWriter(testFile));
@@ -75,23 +69,13 @@ public class MailFactoryTest {
   }
 
   @Test(expected=MailParseException.class)
-  public void createMail_NoPath() throws MailParseException, IOException {
-    Mail actual = mailFactory.createMail(new File(""));
-  }
-
-  @Test(expected=MailParseException.class)
-  public void createMail_EdgePath() throws MailParseException, IOException {
-    Mail actual = mailFactory.createMail(new File("1/2"));
-  }
-
-  @Test(expected=MailParseException.class)
   public void createMail_NoFileAtPath() throws MailParseException, IOException {
     Mail actual = mailFactory.createMail(new File("1/2/3"));
   }
 
   @Test
   public void createMail_Normal() throws MailParseException, IOException {
-    final Mail expected = new Mail(TEST_PERSON, TEST_FOLDER, TEST_FILE_CONTENTS);
+    final Mail expected = new Mail(TEST_FILE_CONTENTS+System.lineSeparator());
     expected.setId(DEFAULT_ID);
 
     final Mail actual = mailFactory.createMail(new File(folder.getRoot() + "/" + TEST_FILE_NAME));
@@ -102,9 +86,8 @@ public class MailFactoryTest {
 
   @Test
   public void createMail_NoContents() throws MailParseException, IOException {
-    String emptyFileName = TEST_PERSON+"/"+TEST_FOLDER+"/emptyFile";
-    File emptyFile = folder.newFile(emptyFileName);
-    final Mail expected = new Mail(TEST_PERSON, TEST_FOLDER, "");
+    File emptyFile = folder.newFile("emptyFile");
+    final Mail expected = new Mail("");
     expected.setId(DEFAULT_ID);
 
     final Mail actual = mailFactory.createMail(emptyFile);

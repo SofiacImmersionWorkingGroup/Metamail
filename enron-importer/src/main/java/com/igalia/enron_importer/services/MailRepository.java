@@ -63,8 +63,6 @@ public class MailRepository {
         for (Mail mail: mailList) {
           Set<String> headers = mail.getAllHeaders();
           put = new Put(Bytes.toBytes(mail.getId()));
-          put.add(Bytes.toBytes("person"), Bytes.toBytes(""), Bytes.toBytes(mail.getPerson()));
-          put.add(Bytes.toBytes("folder"), Bytes.toBytes(""), Bytes.toBytes(mail.getFolder()));
           put.add(Bytes.toBytes("body"), Bytes.toBytes(""), Bytes.toBytes(mail.getBody()));
           for (String header : headers) {
             put.add(Bytes.toBytes("body"), Bytes.toBytes(header), Bytes.toBytes(mail.getHeader(header)));

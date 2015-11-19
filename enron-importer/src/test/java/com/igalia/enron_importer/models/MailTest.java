@@ -1,6 +1,5 @@
 package com.igalia.enron_importer.models;
 
-
 import mockit.Expectations;
 import mockit.Tested;
 import mockit.Verifications;
@@ -51,21 +50,21 @@ public class MailTest {
 
   @Test
   public void toString_Default() {
-    verify_toString(String.format("Mail{id=%s, person=, folder=, body=}", DEFAULT_ID));
+    verify_toString(String.format("Mail{id=%s, body=}", DEFAULT_ID));
   }
 
   @Test
   public void toString_BodyEdgeLength() {
     String bodyEdgeLen = "IthinkThisIsLong";
     mail.setBody(bodyEdgeLen);
-    verify_toString(String.format("Mail{id=%s, person=, folder=, body=%s}", DEFAULT_ID, bodyEdgeLen));
+    verify_toString(String.format("Mail{id=%s, body=%s}", DEFAULT_ID, bodyEdgeLen));
   }
 
   @Test
   public void toString_BodyBigLength() {
     String bodyBiglen = "IthinkThisIsLongEnough";
     mail.setBody(bodyBiglen);
-    verify_toString(String.format("Mail{id=%s, person=, folder=, body=%s}", DEFAULT_ID,
+    verify_toString(String.format("Mail{id=%s, body=%s}", DEFAULT_ID,
           bodyBiglen.substring(0, BODY_TRUNCATE_LEN)));
   }
 
@@ -80,8 +79,8 @@ public class MailTest {
   }
 
   @Test
-  public void equals_ChangedPerson() {
-    Mail other = new Mail("Person1", "", "");
+  public void equals_ChangedBody() {
+    Mail other = new Mail("bodyChanged");
     other.setId(DEFAULT_ID);
     verify_equalsFalse(other);
   }
@@ -95,7 +94,7 @@ public class MailTest {
 
   @Test
   public void hashCode_Normal() {
-    int expected = Objects.hash(DEFAULT_ID, "", "", "");
+    int expected = Objects.hash(DEFAULT_ID, "");
     verify_hashCode(expected);
   }
 }

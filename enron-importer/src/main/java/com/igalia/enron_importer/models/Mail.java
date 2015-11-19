@@ -4,27 +4,21 @@
  */
 package com.igalia.enron_importer.models;
 
-//import com.google.common.base.MoreObjects;
+import com.sun.mail.util.MessageRemovedIOException;
 
+import java.io.ByteArrayInputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Enumeration;
-
-import java.io.ByteArrayInputStream;
-
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.*;
-
-import com.sun.mail.util.MessageRemovedIOException;
 
 public class Mail {
 
   private String id;
-  private String person;
-  private String folder;
   private String body;
   private MimeBodyPart mimebody;
   private HashMap<String, String> headers;
@@ -34,20 +28,16 @@ public class Mail {
    *
    */
   public Mail() {
-    this("", "", "");
+    this("");
   }
 
   /**
    * Constructor. Use this if creating object.
    *
-   * @param person Recipient of the email
-   * @param folder Their mail folder that it was in
    * @param body The rest of the message, unfiltered
    */
-  public Mail(String person, String folder, String body) {
+  public Mail(String body) {
     this.id = UUID.randomUUID().toString();
-    this.person = person;
-    this.folder = folder;
     this.body = body;
     this.headers = new HashMap<String, String>();
     try {
@@ -60,22 +50,6 @@ public class Mail {
       System.out.println(e);
     } 
 
-  }
-
-  public String getPerson() {
-    return person;
-  }
-
-  public void setPerson(String person) {
-    this.person = person;
-  }
-
-  public String getFolder() {
-    return folder;
-  }
-
-  public void setFolder(String folder) {
-    this.folder = folder;
   }
 
   public String getBody() {
@@ -108,15 +82,8 @@ public class Mail {
 
   @Override
   public String toString() {
-    return "To be implemented";
-    /*
-    return Objects.toStringHelper(this)
-      .add("id", this.id)
-      .add("person", this.person)
-      .add("folder", this.folder)
-      .add("body", this.body.substring(0, (body.length() >= 16 ? 16 : body.length())))
-      .toString();
-    */
+    return String.format("Mail{id=%s, body=%s}", this.id, 
+        this.body.substring(0, (body.length() >= 16 ? 16 : body.length())));
   }
 
   @Override
@@ -128,14 +95,12 @@ public class Mail {
     } else {
       Mail other = (Mail) obj;
       return Objects.equals(this.id, other.id) &&
-        Objects.equals(this.person, other.person) &&
-        Objects.equals(this.folder, other.folder) &&
         Objects.equals(this.body, other.body);
     }
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, person, folder, body);
+    return Objects.hash(id, body);
   }
 }
