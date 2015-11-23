@@ -47,7 +47,11 @@ public class EnronImportThread implements Runnable {
     File tempFile = null;
     Queue<File> files = new LinkedBlockingQueue<File>();
 
-    Collections.addAll(files, maildir.listFiles());
+    if (maildir.listFiles().length > 0) {
+      Collections.addAll(files, maildir.listFiles());
+    } else {
+      // Loop will not execute, the files queue is empty.
+    }
 
     /* 
      * Run through the entire queue, and add any if directories are found.
