@@ -14,11 +14,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import javax.mail.Header;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeBodyPart;
 
 @Service
 public class MailFactory {
@@ -37,33 +42,31 @@ public class MailFactory {
     if (infile == null) {
       throw new MailParseException("NULL");
     }
-    BufferedReader inBuffer = null;
-    StringBuffer bodyBuff = new StringBuffer();
+    Map<String, String> headers = new HashMap<String, String>();
+    Header next = null;
+    MimeBodyPart mimebody = null;
+    Enumeration<Header> headerEnum = null;
+    String body = "";
     try {
-      String line = "";
-      inBuffer = new BufferedReader(new FileReader(infile));
-
-      // Read the file through our reader into our string buffer.
-      while ((line = inBuffer.readLine()) != null) {
-        bodyBuff.append(line);
-        // add back in the newline so we can process the body later
-        bodyBuff.append(System.lineSeparator());
-      }
-    // No catch here for IOException since we want to throw them.
-    } catch (FileNotFoundException e) {
-      throw new MailParseException(infile.getAbsolutePath());
-    // but we do want to make sure that the reader is closed properly.
-    } finally {
-      if (inBuffer != null) {
-        try {
-          inBuffer.close();
-        } catch (IOException e) {
-          LOG.error("{}", e);
+      mimebody = new MimeBodyPart(new FileInputStream(infile));
+      body = (String) mimebody.getContent();
+      headerEnum = mimebody.getAllHeaders();
+      while(headerEnum.hasMoreElements()) {
+        next = headerEnum.nextElement();
+        if (!next.getValue().isEmpty()) {
+          headers.put(next.getName(), next.getValue());
+        } else {
+          LOG.debug("Skipping empty header with name '{}'", next.getName());
         }
       }
+
+    } catch (MessagingException e) {
+      throw new MailParseException(infile.getAbsolutePath());
+    } catch (FileNotFoundException e) {
+      throw new MailParseException(infile.getAbsolutePath());
     }
 
-    return new Mail(bodyBuff.toString());
+    return new Mail(body, headers);
   }
 }
 

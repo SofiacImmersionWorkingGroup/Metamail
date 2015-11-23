@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 public class MailTest {
@@ -80,7 +81,7 @@ public class MailTest {
 
   @Test
   public void equals_ChangedBody() {
-    Mail other = new Mail("bodyChanged");
+    Mail other = new Mail("bodyChanged", new HashMap<String, String>());
     other.setId(DEFAULT_ID);
     verify_equalsFalse(other);
   }

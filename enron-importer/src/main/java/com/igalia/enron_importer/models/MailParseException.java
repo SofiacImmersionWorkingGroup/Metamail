@@ -14,6 +14,6 @@ public class MailParseException extends Exception {
    * @param filename The name of the email file name that failed.
    */
   public MailParseException (String filename) {
-    super(String.format("maildir is not in the correct format, failure on parsing %s", filename));
+    super(String.format("Mail file is not in the correct format, failure on parsing %s", filename));
   }
 }
