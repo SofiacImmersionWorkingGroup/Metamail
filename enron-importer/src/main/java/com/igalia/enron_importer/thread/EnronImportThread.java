@@ -61,7 +61,6 @@ public class EnronImportThread implements Runnable {
      */
     while(!files.isEmpty()) {
       tempFile = files.poll();
-      totalFileCount++;
 
       // If directory, explore and add to the queue
       if (tempFile.isDirectory()) {
@@ -71,6 +70,7 @@ public class EnronImportThread implements Runnable {
 
       // If file, then expand it and capture its data.
       } else if (tempFile.isFile()) {
+        totalFileCount++;
 
         try {
           mail = mailFactory.createMail(tempFile);
