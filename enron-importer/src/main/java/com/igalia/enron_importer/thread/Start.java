@@ -25,7 +25,7 @@ public class Start {
     try {
       appContext = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-      Runnable start = (Runnable) appContext.getBean("MainThread");
+      Runnable start = (Runnable) appContext.getBean("Start");
       start.run();
 
     } catch (Throwable t) {

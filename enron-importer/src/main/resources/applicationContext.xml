@@ -15,7 +15,6 @@
   <context:annotation-config />
   <context:property-placeholder location="hbase.properties"/>
   <context:component-scan base-package="com.igalia.enron_importer.services" />
-  <context:component-scan base-package="org.springframework.samples.hadoop.hbase"/>
 
   <hdp:configuration id="hadoopConfiguration">
     fs.defaultFS=hdfs://cloud-3.wg.interclypse.net:8020
@@ -25,7 +24,7 @@
     <property name="configuration" ref="hbaseConfiguration"/>
   </bean>
 
-  <bean id="MainThread" class="com.igalia.enron_importer.thread.EnronImportThread" />
+  <bean id="Start" class="com.igalia.enron_importer.thread.EnronImportThread" />
   <bean id="maildir" class="java.io.File">
     <constructor-arg value="./data/maildir" />
   </bean>
