@@ -2,9 +2,9 @@ skipTests=
 execJava=false
 
 if [ $# -eq 1 ]; then
-  if [ $1 -eq "-skip" ];then
+  if [ "$1" == "-skip" ];then
     skipTests="-Dmaven.test.skip=true"
-  elif [ $1 -eq "-x" ];then
+  elif [ "$1" == "-x" ];then
     execJava=true
   fi
 elif [ $# -eq 2 ]; then
