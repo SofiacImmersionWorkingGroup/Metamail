@@ -14,6 +14,6 @@ fi
 
 mvn clean install $skipTests
 
-if [ $execJava ];then
+if $execJava ;then
   mvn exec:java -Dexec.mainClass="com.igalia.enron_importer.thread.Start"
 fi
