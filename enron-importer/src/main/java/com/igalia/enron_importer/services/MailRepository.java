@@ -55,18 +55,23 @@ public class MailRepository {
    * @return the number of objects that were added to the database.
    */
   public int batchMailPut(final List<Mail> mailList) {
+    if (mailList == null || mailList.isEmpty()) {
+      return 0;
+    }
+
     return hbaseTemplate.execute(tableName, new TableCallback<Integer>() {
       @Override
       public Integer doInTable(HTableInterface table) throws Throwable {
         List<Put> putList = new ArrayList<Put>();
         int imported = 0;
         Put put = null;
+        Map<String, String> headers;
         for (Mail mail: mailList) {
-          Map<String, String> headers = mail.getHeaders();
+          headers = mail.getHeaders();
           put = new Put(Bytes.toBytes(mail.getId()));
-          put.add(Bytes.toBytes("body"), Bytes.toBytes(""), Bytes.toBytes(mail.getBody()));
-          for (String header : headers.keySet()) {
-            put.add(Bytes.toBytes("body"), Bytes.toBytes(header), Bytes.toBytes(headers.get(header)));
+          put.add(Bytes.toBytes("body"), Bytes.toBytes("body"), Bytes.toBytes(mail.getBody()));
+          for (String headerKey : headers.keySet()) {
+            put.add(Bytes.toBytes("headers"), Bytes.toBytes(headerKey), Bytes.toBytes(headers.get(headerKey)));
           }
           putList.add(put);
           LOG.trace("Added one Put request for object {}.", mail.getId());
